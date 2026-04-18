@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NovoBanco.Domain\NovoBanco.Domain.csproj" />
+	  <ProjectReference Include="..\NovoBanco.Domain\NovoBanco.Domain.csproj" />
   </ItemGroup>
 
 </Project>
