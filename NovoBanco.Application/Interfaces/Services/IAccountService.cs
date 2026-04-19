@@ -21,4 +21,28 @@ public interface IAccountService
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<AccountResponseDto> GetByIdAsync(Guid accountId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Bloquear cuenta a traves del id
+    /// </summary>
+    /// <param name="accountId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task BlockAccountAsync(Guid accountId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Cerrar cuenta a traves del id
+    /// </summary>
+    /// <param name="accountId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task CloseAccountAsync(Guid accountId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Activar cuenta a traves del id
+    /// </summary>
+    /// <param name="accountId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task ActivateAccountAsync(Guid accountId, CancellationToken cancellationToken = default);
 }

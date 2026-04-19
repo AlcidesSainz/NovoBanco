@@ -2,8 +2,10 @@
 using NovoBanco.Application.Interfaces;
 using NovoBanco.Application.Interfaces.Repositories;
 using NovoBanco.Application.Interfaces.Services;
+using NovoBanco.Application.Resources;
 using NovoBanco.Domain.Entities;
 using NovoBanco.Domain.Enums;
+using NovoBanco.Domain.Exceptions;
 
 namespace NovoBanco.Application.Services;
 
@@ -97,6 +99,86 @@ public class AccountService : IAccountService
         };
     }
 
+    /// <summary>
+    /// Bloquear cuenta
+    /// </summary>
+    /// <param name="accountId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="KeyNotFoundException"></exception>
+    public async Task BlockAccountAsync(Guid accountId, CancellationToken cancellationToken = default)
+    {
+        var account = await _accountRepository.GetByIdAsync(accountId, cancellationToken);
+
+        if (account is null)
+        {
+            throw new KeyNotFoundException(ErrorMessages.Account_NotFound);
+        }
+
+        if (account.Status == AccountStatus.Blocked)
+        {
+            throw new BusinessException(Resources.BusinessMessages.Account_Blocked);
+        }
+
+        account.Status = AccountStatus.Blocked;
+
+        await _accountRepository.UpdateAsync(account, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// Cerrar cuenta
+    /// </summary>
+    /// <param name="accountId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="KeyNotFoundException"></exception>
+    public async Task CloseAccountAsync(Guid accountId, CancellationToken cancellationToken = default)
+    {
+        var account = await _accountRepository.GetByIdAsync(accountId, cancellationToken);
+
+        if (account is null)
+        {
+            throw new KeyNotFoundException(ErrorMessages.Account_NotFound);
+        }
+
+        if (account.Status == AccountStatus.Closed)
+        {
+            throw new BusinessException(Resources.BusinessMessages.Account_Closed);
+        }
+
+        account.Status = AccountStatus.Closed;
+
+        await _accountRepository.UpdateAsync(account, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// Activar cuenta
+    /// </summary>
+    /// <param name="accountId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="KeyNotFoundException"></exception>
+    public async Task ActivateAccountAsync(Guid accountId, CancellationToken cancellationToken = default)
+    {
+        var account = await _accountRepository.GetByIdAsync(accountId, cancellationToken);
+
+        if (account is null)
+        {
+            throw new KeyNotFoundException(ErrorMessages.Account_NotFound);
+        }
+
+        if (account.Status == AccountStatus.Active)
+        {
+            throw new BusinessException(Resources.BusinessMessages.Account_Activated);
+        }
+
+        account.Status = AccountStatus.Active;
+
+        await _accountRepository.UpdateAsync(account, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
     /// <summary>
     /// Genera un número de cuenta aleatorio.
     /// </summary>
