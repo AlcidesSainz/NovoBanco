@@ -6,7 +6,7 @@
 public class InsufficientFundsException : BusinessException
 {
     public InsufficientFundsException()
-        : base("The account does not have sufficient funds.")
+        : base("La cuenta no tiene saldo suficiente.")
     {
     }
 }

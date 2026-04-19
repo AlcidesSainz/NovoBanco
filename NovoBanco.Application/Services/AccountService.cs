@@ -39,7 +39,7 @@ public class AccountService : IAccountService
 
         if (customer is null)
         {
-            throw new KeyNotFoundException("Customer was not found.");
+            throw new KeyNotFoundException(Resources.ErrorMessages.Customer_NotFound);
         }
 
         var account = new Account
@@ -82,7 +82,7 @@ public class AccountService : IAccountService
 
         if (account is null)
         {
-            throw new KeyNotFoundException("Account was not found.");
+            throw new KeyNotFoundException(Resources.ErrorMessages.Account_NotFound);
         }
 
         return new AccountResponseDto

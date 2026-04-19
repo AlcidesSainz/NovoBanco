@@ -2,6 +2,7 @@
 using NovoBanco.Application.Interfaces;
 using NovoBanco.Application.Interfaces.Repositories;
 using NovoBanco.Application.Interfaces.Services;
+using NovoBanco.Application.Resources;
 using NovoBanco.Domain.Entities;
 using NovoBanco.Domain.Enums;
 using NovoBanco.Domain.Exceptions;
@@ -44,7 +45,7 @@ public class TransactionService : ITransactionService
         // Validación de monto positivo
         if (request.Amount <= 0)
         {
-            throw new ArgumentException("Amount must be greater than zero.");
+            throw new ArgumentException(Resources.ValidationMessages.Amount_Must_Be_Greater_Than_Zero);
         }
 
         // Obtener la cuenta
@@ -52,7 +53,7 @@ public class TransactionService : ITransactionService
 
         if (account is null)
         {
-            throw new KeyNotFoundException("Account was not found.");
+            throw new KeyNotFoundException(Resources.ErrorMessages.Account_NotFound);
         }
 
         // Validar que la cuenta esté activa
@@ -63,7 +64,7 @@ public class TransactionService : ITransactionService
 
         if (referenceExists)
         {
-            throw new BusinessException("A transaction with the same reference already exists.");
+            throw new BusinessException(Resources.ValidationMessages.Transaction_Same_Reference);
         }
 
         // Aplicar lógica de negocio
@@ -103,14 +104,14 @@ public class TransactionService : ITransactionService
         // Validación de monto positivo
         if (request.Amount <= 0)
         {
-            throw new ArgumentException("Amount must be greater than zero.");
+            throw new ArgumentException(Resources.ValidationMessages.Amount_Must_Be_Greater_Than_Zero);
         }
 
         var account = await _accountRepository.GetByIdAsync(request.AccountId, cancellationToken);
 
         if (account is null)
         {
-            throw new KeyNotFoundException("Account was not found.");
+            throw new KeyNotFoundException(Resources.ErrorMessages.Account_NotFound);
         }
 
         // Validar estado de la cuenta
@@ -121,7 +122,7 @@ public class TransactionService : ITransactionService
 
         if (referenceExists)
         {
-            throw new BusinessException("A transaction with the same reference already exists.");
+            throw new BusinessException(Resources.ValidationMessages.Transaction_Same_Reference);
         }
 
         // Validar saldo suficiente
@@ -163,12 +164,12 @@ public class TransactionService : ITransactionService
         // Validaciones básicas
         if (request.Amount <= 0)
         {
-            throw new ArgumentException("Amount must be greater than zero.");
+            throw new ArgumentException(Resources.ValidationMessages.Amount_Must_Be_Greater_Than_Zero);
         }
 
         if (request.SourceAccountId == request.DestinationAccountId)
         {
-            throw new ArgumentException("Source and destination accounts must be different.");
+            throw new ArgumentException(ValidationMessages.Same_Account_Transfer);
         }
 
         // Validar referencia única
@@ -176,7 +177,7 @@ public class TransactionService : ITransactionService
 
         if (referenceExists)
         {
-            throw new BusinessException("A transaction with the same reference already exists.");
+            throw new BusinessException(BusinessMessages.Transaction_Same_Reference);
         }
 
         // Iniciar transacción de base de datos
@@ -188,10 +189,10 @@ public class TransactionService : ITransactionService
             var destinationAccount = await _accountRepository.GetByIdAsync(request.DestinationAccountId, cancellationToken);
 
             if (sourceAccount is null)
-                throw new KeyNotFoundException("Source account was not found.");
+                throw new KeyNotFoundException(ErrorMessages.Source_Account_NotFound);
 
             if (destinationAccount is null)
-                throw new KeyNotFoundException("Destination account was not found.");
+                throw new KeyNotFoundException(ErrorMessages.Destination_Account_NotFound);
 
             // Validar cuentas activas
             EnsureAccountIsActive(sourceAccount);
@@ -268,7 +269,7 @@ public class TransactionService : ITransactionService
 
         if (account is null)
         {
-            throw new KeyNotFoundException("Account was not found.");
+            throw new KeyNotFoundException(Resources.ErrorMessages.Account_NotFound);
         }
 
         var result = await _transactionRepository.GetPagedByAccountIdAsync(accountId, page, pageSize, cancellationToken);
