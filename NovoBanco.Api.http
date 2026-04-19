@@ -1,0 +1,63 @@
+@host = https://localhost:5001
+@customerId = 00000000-0000-0000-0000-000000000000
+@accountId = 00000000-0000-0000-0000-000000000000
+@sourceAccountId = 00000000-0000-0000-0000-000000000000
+@destinationAccountId = 00000000-0000-0000-0000-000000000000
+
+### Crear cliente
+POST {{host}}/api/customers
+Content-Type: application/json
+
+{
+  "fullName": "Juan Perez",
+  "documentNumber": "1234567890"
+}
+
+### Obtener cliente por id
+GET {{host}}/api/customers/{{customerId}}
+
+### Crear cuenta
+POST {{host}}/api/accounts
+Content-Type: application/json
+
+{
+  "customerId": "{{customerId}}",
+  "accountType": 1
+}
+
+### Obtener cuenta por id
+GET {{host}}/api/accounts/{{accountId}}
+
+### Bloquear cuenta
+PUT {{host}}/api/accounts/{{accountId}}/block
+
+### Deposito
+POST {{host}}/api/transactions/deposit
+Content-Type: application/json
+
+{
+  "accountId": "{{accountId}}",
+  "amount": 100
+}
+
+### Retiro
+POST {{host}}/api/transactions/withdraw
+Content-Type: application/json
+
+{
+  "accountId": "{{accountId}}",
+  "amount": 50
+}
+
+### Transferencia
+POST {{host}}/api/transactions/transfer
+Content-Type: application/json
+
+{
+  "sourceAccountId": "{{sourceAccountId}}",
+  "destinationAccountId": "{{destinationAccountId}}",
+  "amount": 25
+}
+
+### Historial de transacciones
+GET {{host}}/api/accounts/{{accountId}}/transactions?page=1&pageSize=20

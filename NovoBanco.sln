@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovoBanco.Infrastructure", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovoBanco.Api", "NovoBanco.Api\NovoBanco.Api.csproj", "{1100E057-9612-675F-BEF8-2284BAD686A5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovoBanco.Tests", "NovoBanco.tests\NovoBanco.Tests.csproj", "{527BC630-1B98-43EC-A613-B7F2435EE650}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{1100E057-9612-675F-BEF8-2284BAD686A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1100E057-9612-675F-BEF8-2284BAD686A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1100E057-9612-675F-BEF8-2284BAD686A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{527BC630-1B98-43EC-A613-B7F2435EE650}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{527BC630-1B98-43EC-A613-B7F2435EE650}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{527BC630-1B98-43EC-A613-B7F2435EE650}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{527BC630-1B98-43EC-A613-B7F2435EE650}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

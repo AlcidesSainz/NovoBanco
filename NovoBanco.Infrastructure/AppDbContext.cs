@@ -50,6 +50,9 @@ public class AppDbContext : DbContext
             entity.Property(x => x.CustomerId)
                 .HasColumnName("ClienteId");
 
+            entity.Property(x => x.Type)
+                .HasColumnName("Tipo");
+
             entity.Property(x => x.Currency)
                 .HasColumnName("Moneda")
                 .HasMaxLength(3)
