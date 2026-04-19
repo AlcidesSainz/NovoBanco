@@ -4,6 +4,9 @@ using NovoBanco.Domain.Exceptions;
 
 namespace NovoBanco.Api.Middleware;
 
+/// <summary>
+/// Clase de middleware para manejo global de excepciones en la API.
+/// </summary>
 public class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
@@ -15,6 +18,11 @@ public class ExceptionMiddleware
         _logger = logger;
     }
 
+    /// <summary>
+    /// Metodo principal del middleware que intercepta las excepciones no manejadas durante la ejecución de la solicitud HTTP.
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
     public async Task InvokeAsync(HttpContext context)
     {
         try
@@ -43,6 +51,13 @@ public class ExceptionMiddleware
         }
     }
 
+    /// <summary>
+    /// Metodo auxiliar para escribir una respuesta de error en formato JSON con el código de estado HTTP y el mensaje de error correspondiente.
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="statusCode"></param>
+    /// <param name="message"></param>
+    /// <returns></returns>
     private static async Task WriteErrorResponseAsync(HttpContext context, HttpStatusCode statusCode, string message)
     {
         context.Response.ContentType = "application/json";

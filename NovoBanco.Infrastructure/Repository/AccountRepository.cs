@@ -5,6 +5,13 @@ using NovoBanco.Infrastructure.Data;
 
 namespace NovoBanco.Infrastructure.Repositories;
 
+/// <summary>
+/// Clase de repositorio para la entidad Account
+/// , que implementa la interfaz IAccountRepository 
+/// y define los métodos necesarios para acceder y 
+/// manipular los datos de las cuentas bancarias en
+/// la capa de persistencia utilizando Entity Framework Core.
+/// </summary>
 public class AccountRepository : IAccountRepository
 {
     private readonly AppDbContext _context;

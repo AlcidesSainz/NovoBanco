@@ -5,6 +5,13 @@ using NovoBanco.Infrastructure.Data;
 
 namespace NovoBanco.Infrastructure.Repositories;
 
+/// <summary>
+/// Clase de repositorio para la entidad Transaction, 
+/// que implementa la interfaz ITransactionRepository y 
+/// proporciona los métodos necesarios para acceder y 
+/// manipular los datos de las transacciones bancarias en 
+/// la capa de persistencia utilizando Entity Framework Core.
+/// </summary>
 public class TransactionRepository : ITransactionRepository
 {
     private readonly AppDbContext _context;

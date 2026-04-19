@@ -1,5 +1,10 @@
 ﻿namespace NovoBanco.Application.Dtos.Transactions;
-
+/// <summary>
+/// Dto de respuesta para la entidad Transacción, utilizado para devolver 
+/// los detalles de una transacción bancaria en las respuestas de la API, 
+/// incluyendo información sobre la cuenta de origen, la cuenta de destino
+/// , el monto, el tipo de transacción, la referencia, el estado y la fecha de creación.
+/// </summary>
 public class TransactionResponseDto
 {
     public Guid Id { get; set; }
