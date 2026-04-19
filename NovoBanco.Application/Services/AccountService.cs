@@ -1,0 +1,98 @@
+﻿using NovoBanco.Application.Dtos.Accounts;
+using NovoBanco.Application.Interfaces;
+using NovoBanco.Application.Interfaces.Repositories;
+using NovoBanco.Application.Interfaces.Services;
+using NovoBanco.Domain.Entities;
+using NovoBanco.Domain.Enums;
+
+namespace NovoBanco.Application.Services;
+
+/// <summary>
+/// Handles account-related business operations.
+/// </summary>
+public class AccountService : IAccountService
+{
+    private readonly IAccountRepository _accountRepository;
+    private readonly ICustomerRepository _customerRepository;
+    private readonly IUnitOfWork _unitOfWork;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AccountService"/> class.
+    /// </summary>
+    public AccountService(
+        IAccountRepository accountRepository,
+        ICustomerRepository customerRepository,
+        IUnitOfWork unitOfWork)
+    {
+        _accountRepository = accountRepository;
+        _customerRepository = customerRepository;
+        _unitOfWork = unitOfWork;
+    }
+
+    /// <inheritdoc />
+    public async Task<AccountResponseDto> CreateAccountAsync(
+        CreateAccountRequestDto request,
+        CancellationToken cancellationToken = default)
+    {
+        var customer = await _customerRepository.GetByIdAsync(request.CustomerId, cancellationToken);
+
+        if (customer is null)
+        {
+            throw new KeyNotFoundException("Customer was not found.");
+        }
+
+        var account = new Account
+        {
+            Id = Guid.NewGuid(),
+            CustomerId = request.CustomerId,
+            AccountNumber = GenerateAccountNumber(),
+            Type = (AccountType)request.AccountType,
+            Currency = "USD",
+            Balance = 0m,
+            Status = AccountStatus.Active,
+            CreatedAtUtc = DateTime.UtcNow
+        };
+
+        await _accountRepository.AddAsync(account, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return new AccountResponseDto
+        {
+            Id = account.Id,
+            AccountNumber = account.AccountNumber,
+            AccountType = account.Type.ToString(),
+            Currency = account.Currency,
+            Balance = account.Balance,
+            Status = account.Status.ToString(),
+            CustomerId = account.CustomerId
+        };
+    }
+
+    /// <inheritdoc />
+    public async Task<AccountResponseDto> GetByIdAsync(Guid accountId, CancellationToken cancellationToken = default)
+    {
+        var account = await _accountRepository.GetByIdAsync(accountId, cancellationToken);
+
+        if (account is null)
+        {
+            throw new KeyNotFoundException("Account was not found.");
+        }
+
+        return new AccountResponseDto
+        {
+            Id = account.Id,
+            AccountNumber = account.AccountNumber,
+            AccountType = account.Type.ToString(),
+            Currency = account.Currency,
+            Balance = account.Balance,
+            Status = account.Status.ToString(),
+            CustomerId = account.CustomerId
+        };
+    }
+
+    private static string GenerateAccountNumber()
+    {
+        var random = new Random();
+        return $"{random.Next(10000000, 99999999)}";
+    }
+}

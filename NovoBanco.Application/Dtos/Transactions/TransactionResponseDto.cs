@@ -1,17 +1,13 @@
-﻿using NovoBanco.Domain.Enums;
+﻿namespace NovoBanco.Application.Dtos.Transactions;
 
-namespace NovoBanco.Domain.Entities;
-
-public class Transaction
+public class TransactionResponseDto
 {
     public Guid Id { get; set; }
     public Guid AccountId { get; set; }
     public Guid? DestinationAccountId { get; set; }
     public decimal Amount { get; set; }
-    public TransactionType Type { get; set; }
+    public string Type { get; set; } = string.Empty;
     public string Reference { get; set; } = string.Empty;
-    public TransactionStatus Status { get; set; }
+    public string Status { get; set; } = string.Empty;
     public DateTime CreatedAtUtc { get; set; }
-
-    public Account? Account { get; set; }
 }

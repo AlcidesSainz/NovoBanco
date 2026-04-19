@@ -1,27 +1,18 @@
-﻿public class Account
+﻿using NovoBanco.Domain.Enums;
+
+namespace NovoBanco.Domain.Entities;
+
+public class Account
 {
-    public Guid Id { get; private set; }
-    public decimal Balance { get; private set; }
-    public AccountStatus Status { get; private set; }
+    public Guid Id { get; set; }
+    public Guid CustomerId { get; set; }
+    public string AccountNumber { get; set; } = string.Empty;
+    public AccountType Type { get; set; }
+    public string Currency { get; set; } = "USD";
+    public decimal Balance { get; set; }
+    public AccountStatus Status { get; set; }
+    public DateTime CreatedAtUtc { get; set; }
+    public byte[] RowVersion { get; set; } = Array.Empty<byte>();
 
-    public byte[] RowVersion { get; set; }
-
-    public void Debit(decimal amount)
-    {
-        if (Status != AccountStatus.Active)
-            throw new Exception("Cuenta no activa");
-
-        if (Balance < amount)
-            throw new Exception("Saldo insuficiente");
-
-        Balance -= amount;
-    }
-
-    public void Credit(decimal amount)
-    {
-        if (Status != AccountStatus.Active)
-            throw new Exception("Cuenta no activa");
-
-        Balance += amount;
-    }
+    public Customer? Customer { get; set; }
 }
