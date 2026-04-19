@@ -59,14 +59,6 @@ public class TransactionService : ITransactionService
         // Validar que la cuenta esté activa
         EnsureAccountIsActive(account);
 
-        // Validar que la referencia sea única
-        var referenceExists = await _transactionRepository.ExistsByReferenceAsync(request.Reference, cancellationToken);
-
-        if (referenceExists)
-        {
-            throw new BusinessException(Resources.ValidationMessages.Transaction_Same_Reference);
-        }
-
         // Aplicar lógica de negocio
         account.Balance += request.Amount;
 
@@ -77,7 +69,7 @@ public class TransactionService : ITransactionService
             AccountId = account.Id,
             Amount = request.Amount,
             Type = TransactionType.Deposit,
-            Reference = request.Reference,
+            Reference = Guid.NewGuid().ToString(),
             Status = TransactionStatus.Successful,
             CreatedAtUtc = DateTime.UtcNow
         };
@@ -117,14 +109,6 @@ public class TransactionService : ITransactionService
         // Validar estado de la cuenta
         EnsureAccountIsActive(account);
 
-        // Validar referencia única
-        var referenceExists = await _transactionRepository.ExistsByReferenceAsync(request.Reference, cancellationToken);
-
-        if (referenceExists)
-        {
-            throw new BusinessException(Resources.ValidationMessages.Transaction_Same_Reference);
-        }
-
         // Validar saldo suficiente
         if (account.Balance < request.Amount)
         {
@@ -140,7 +124,7 @@ public class TransactionService : ITransactionService
             AccountId = account.Id,
             Amount = request.Amount,
             Type = TransactionType.Withdrawal,
-            Reference = request.Reference,
+            Reference = Guid.NewGuid().ToString(),
             Status = TransactionStatus.Successful,
             CreatedAtUtc = DateTime.UtcNow
         };
@@ -172,14 +156,6 @@ public class TransactionService : ITransactionService
             throw new ArgumentException(ValidationMessages.Same_Account_Transfer);
         }
 
-        // Validar referencia única
-        var referenceExists = await _transactionRepository.ExistsByReferenceAsync(request.Reference, cancellationToken);
-
-        if (referenceExists)
-        {
-            throw new BusinessException(BusinessMessages.Transaction_Same_Reference);
-        }
-
         // Iniciar transacción de base de datos
         await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
@@ -205,6 +181,7 @@ public class TransactionService : ITransactionService
             // Aplicar movimientos
             sourceAccount.Balance -= request.Amount;
             destinationAccount.Balance += request.Amount;
+            string baseReference = Guid.NewGuid().ToString();
 
             // Registro de débito
             var debitTransaction = new Transaction
@@ -214,7 +191,7 @@ public class TransactionService : ITransactionService
                 DestinationAccountId = destinationAccount.Id,
                 Amount = request.Amount,
                 Type = TransactionType.TransferDebit,
-                Reference = request.Reference,
+                Reference = Guid.NewGuid().ToString(),
                 Status = TransactionStatus.Successful,
                 CreatedAtUtc = DateTime.UtcNow
             };
@@ -227,7 +204,7 @@ public class TransactionService : ITransactionService
                 DestinationAccountId = sourceAccount.Id,
                 Amount = request.Amount,
                 Type = TransactionType.TransferCredit,
-                Reference = $"{request.Reference}-IN",
+                Reference = $"{baseReference}-IN",
                 Status = TransactionStatus.Successful,
                 CreatedAtUtc = DateTime.UtcNow
             };
