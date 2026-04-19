@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36414.22 d17.14
+VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovoBanco.Api", "NovoBanco\NovoBanco.Api.csproj", "{7AB803F5-49DD-417A-BC63-F66B01EEA4E8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovoBanco.Domain", "NovoBanco.Domain\NovoBanco.Domain.csproj", "{0CF0281C-A553-4167-9152-F152BECE6EBC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovoBanco.Application", "NovoBanco.Application\NovoBanco.Application.csproj", "{D1D04D01-10C6-4097-9F10-45E19F8C2AAA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovoBanco.Infrastructure", "NovoBanco.Infrastructure\NovoBanco.Infrastructure.csproj", "{A5F05E8F-EFE8-4587-BB5D-969987492F2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovoBanco.Api", "NovoBanco.Api\NovoBanco.Api.csproj", "{1100E057-9612-675F-BEF8-2284BAD686A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7AB803F5-49DD-417A-BC63-F66B01EEA4E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7AB803F5-49DD-417A-BC63-F66B01EEA4E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7AB803F5-49DD-417A-BC63-F66B01EEA4E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7AB803F5-49DD-417A-BC63-F66B01EEA4E8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0CF0281C-A553-4167-9152-F152BECE6EBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0CF0281C-A553-4167-9152-F152BECE6EBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CF0281C-A553-4167-9152-F152BECE6EBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{A5F05E8F-EFE8-4587-BB5D-969987492F2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5F05E8F-EFE8-4587-BB5D-969987492F2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5F05E8F-EFE8-4587-BB5D-969987492F2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1100E057-9612-675F-BEF8-2284BAD686A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1100E057-9612-675F-BEF8-2284BAD686A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1100E057-9612-675F-BEF8-2284BAD686A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1100E057-9612-675F-BEF8-2284BAD686A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
