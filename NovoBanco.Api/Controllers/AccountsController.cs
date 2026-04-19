@@ -77,4 +77,49 @@ public class AccountsController : ControllerBase
             Items = result.Items
         });
     }
+
+    /// <summary>
+    /// Bloquea una cuenta bancaria.
+    /// </summary>
+    /// <param name="id">Identificador de la cuenta.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut("{id:guid}/block")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> BlockAccount(Guid id, CancellationToken cancellationToken)
+    {
+        await _accountService.BlockAccountAsync(id, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Cerrar una cuenta bancaria.
+    /// </summary>
+    /// <param name="id">Identificador de la cuenta.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut("{id:guid}/close")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> CloseAccount(Guid id, CancellationToken cancellationToken)
+    {
+        await _accountService.CloseAccountAsync(id, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Activar una cuenta bancaria.
+    /// </summary>
+    /// <param name="id">Identificador de la cuenta.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut("{id:guid}/activate")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ActivateAccount(Guid id, CancellationToken cancellationToken)
+    {
+        await _accountService.ActivateAccountAsync(id, cancellationToken);
+        return NoContent();
+    }
 }
