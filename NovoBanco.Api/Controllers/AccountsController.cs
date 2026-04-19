@@ -4,6 +4,9 @@ using NovoBanco.Application.Interfaces.Services;
 
 namespace NovoBanco.Api.Controllers;
 
+/// <summary>
+/// Controlador para manejo de cuentas bancarias
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class AccountsController : ControllerBase
@@ -19,6 +22,17 @@ public class AccountsController : ControllerBase
         _transactionService = transactionService;
     }
 
+    /// <summary>
+    /// Crea una nueva cuenta bancaria para un cliente existente. 
+    /// El número de cuenta se genera automáticamente y se garantiza su unicidad. 
+    /// La cuenta se crea con un saldo inicial de 0 y un estado activo. 
+    /// Se valida que el cliente exista antes de crear la cuenta. 
+    /// Si el cliente no existe, se devuelve un error 404. 
+    /// Si la creación es exitosa, se devuelve un código 201 con los detalles de la cuenta creada.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<IActionResult> CreateAccount([FromBody] CreateAccountRequestDto request, CancellationToken cancellationToken)
     {
@@ -26,6 +40,12 @@ public class AccountsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
+    /// <summary>
+    /// Obtiene los detalles de una cuenta bancaria específica por su ID.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
@@ -33,6 +53,14 @@ public class AccountsController : ControllerBase
         return Ok(result);
     }
 
+    /// <summary>
+    /// Obtiene una lista paginada de transacciones asociadas a una cuenta bancaria específica.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpGet("{id:guid}/transactions")]
     public async Task<IActionResult> GetTransactions(
         Guid id,

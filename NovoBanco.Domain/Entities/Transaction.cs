@@ -2,6 +2,9 @@
 
 namespace NovoBanco.Domain.Entities;
 
+/// <summary>
+/// Entidad que representa una transacción bancaria, con propiedades como el monto, tipo, referencia, estado y fecha de creación.
+/// </summary>
 public class Transaction
 {
     public Guid Id { get; set; }

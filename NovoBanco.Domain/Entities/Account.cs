@@ -2,6 +2,9 @@
 
 namespace NovoBanco.Domain.Entities;
 
+/// <summary>
+/// Entidad que representa una cuenta bancaria, con propiedades como el número de cuenta, tipo, moneda, saldo y estado.
+/// </summary>
 public class Account
 {
     public Guid Id { get; set; }

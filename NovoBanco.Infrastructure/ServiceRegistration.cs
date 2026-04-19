@@ -20,6 +20,7 @@ public static class ServiceRegistration
 
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();

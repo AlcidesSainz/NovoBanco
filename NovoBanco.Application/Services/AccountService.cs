@@ -8,7 +8,7 @@ using NovoBanco.Domain.Enums;
 namespace NovoBanco.Application.Services;
 
 /// <summary>
-/// Handles account-related business operations.
+/// Maneja las operaciones de negocio relacionadas con las cuentas.
 /// </summary>
 public class AccountService : IAccountService
 {
@@ -17,22 +17,23 @@ public class AccountService : IAccountService
     private readonly IUnitOfWork _unitOfWork;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AccountService"/> class.
+    /// Inicializa una nueva instancia de la clase <see cref="AccountService"/>.
     /// </summary>
-    public AccountService(
-        IAccountRepository accountRepository,
-        ICustomerRepository customerRepository,
-        IUnitOfWork unitOfWork)
+    public AccountService(IAccountRepository accountRepository, ICustomerRepository customerRepository, IUnitOfWork unitOfWork)
     {
         _accountRepository = accountRepository;
         _customerRepository = customerRepository;
         _unitOfWork = unitOfWork;
     }
 
-    /// <inheritdoc />
-    public async Task<AccountResponseDto> CreateAccountAsync(
-        CreateAccountRequestDto request,
-        CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Crea una nueva cuenta bancaria para un cliente existente.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="KeyNotFoundException"></exception>
+    public async Task<AccountResponseDto> CreateAccountAsync(CreateAccountRequestDto request, CancellationToken cancellationToken = default)
     {
         var customer = await _customerRepository.GetByIdAsync(request.CustomerId, cancellationToken);
 
@@ -68,7 +69,13 @@ public class AccountService : IAccountService
         };
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Obtiene los detalles de una cuenta bancaria específica por su ID.
+    /// </summary>
+    /// <param name="accountId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="KeyNotFoundException"></exception>
     public async Task<AccountResponseDto> GetByIdAsync(Guid accountId, CancellationToken cancellationToken = default)
     {
         var account = await _accountRepository.GetByIdAsync(accountId, cancellationToken);
@@ -90,6 +97,10 @@ public class AccountService : IAccountService
         };
     }
 
+    /// <summary>
+    /// Genera un número de cuenta aleatorio.
+    /// </summary>
+    /// <returns>Número de cuenta generado.</returns>
     private static string GenerateAccountNumber()
     {
         var random = new Random();

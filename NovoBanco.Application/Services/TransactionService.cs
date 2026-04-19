@@ -9,7 +9,7 @@ using NovoBanco.Domain.Exceptions;
 namespace NovoBanco.Application.Services;
 
 /// <summary>
-/// Handles transaction-related business operations.
+/// Maneja las operaciones de negocio relacionadas con las transacciones.
 /// </summary>
 public class TransactionService : ITransactionService
 {
@@ -18,7 +18,7 @@ public class TransactionService : ITransactionService
     private readonly IUnitOfWork _unitOfWork;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TransactionService"/> class.
+    /// Inicializa una nueva instancia de la clase <see cref="TransactionService"/>.
     /// </summary>
     public TransactionService(
         IAccountRepository accountRepository,
@@ -30,14 +30,24 @@ public class TransactionService : ITransactionService
         _unitOfWork = unitOfWork;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Deposita un monto específico en una cuenta bancaria.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="KeyNotFoundException"></exception>
+    /// <exception cref="BusinessException"></exception>
     public async Task DepositAsync(DepositRequestDto request, CancellationToken cancellationToken = default)
     {
+        // Validación de monto positivo
         if (request.Amount <= 0)
         {
             throw new ArgumentException("Amount must be greater than zero.");
         }
 
+        // Obtener la cuenta
         var account = await _accountRepository.GetByIdAsync(request.AccountId, cancellationToken);
 
         if (account is null)
@@ -45,8 +55,10 @@ public class TransactionService : ITransactionService
             throw new KeyNotFoundException("Account was not found.");
         }
 
+        // Validar que la cuenta esté activa
         EnsureAccountIsActive(account);
 
+        // Validar que la referencia sea única
         var referenceExists = await _transactionRepository.ExistsByReferenceAsync(request.Reference, cancellationToken);
 
         if (referenceExists)
@@ -54,8 +66,10 @@ public class TransactionService : ITransactionService
             throw new BusinessException("A transaction with the same reference already exists.");
         }
 
+        // Aplicar lógica de negocio
         account.Balance += request.Amount;
 
+        // Registrar transacción
         var transaction = new Transaction
         {
             Id = Guid.NewGuid(),
@@ -69,12 +83,24 @@ public class TransactionService : ITransactionService
 
         await _transactionRepository.AddAsync(transaction, cancellationToken);
         await _accountRepository.UpdateAsync(account, cancellationToken);
+
+        // Persistir cambios
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Metodo para retirar un monto específico de una cuenta bancaria. 
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="KeyNotFoundException"></exception>
+    /// <exception cref="BusinessException"></exception>
+    /// <exception cref="InsufficientFundsException"></exception>
     public async Task WithdrawAsync(WithdrawRequestDto request, CancellationToken cancellationToken = default)
     {
+        // Validación de monto positivo
         if (request.Amount <= 0)
         {
             throw new ArgumentException("Amount must be greater than zero.");
@@ -87,8 +113,10 @@ public class TransactionService : ITransactionService
             throw new KeyNotFoundException("Account was not found.");
         }
 
+        // Validar estado de la cuenta
         EnsureAccountIsActive(account);
 
+        // Validar referencia única
         var referenceExists = await _transactionRepository.ExistsByReferenceAsync(request.Reference, cancellationToken);
 
         if (referenceExists)
@@ -96,11 +124,13 @@ public class TransactionService : ITransactionService
             throw new BusinessException("A transaction with the same reference already exists.");
         }
 
+        // Validar saldo suficiente
         if (account.Balance < request.Amount)
         {
             throw new InsufficientFundsException();
         }
 
+        // Aplicar lógica
         account.Balance -= request.Amount;
 
         var transaction = new Transaction
@@ -116,12 +146,21 @@ public class TransactionService : ITransactionService
 
         await _transactionRepository.AddAsync(transaction, cancellationToken);
         await _accountRepository.UpdateAsync(account, cancellationToken);
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Transfiere un monto específico de una cuenta bancaria a otra cuenta bancaria.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="BusinessException"></exception>
     public async Task TransferAsync(TransferRequestDto request, CancellationToken cancellationToken = default)
     {
+        // Validaciones básicas
         if (request.Amount <= 0)
         {
             throw new ArgumentException("Amount must be greater than zero.");
@@ -132,6 +171,7 @@ public class TransactionService : ITransactionService
             throw new ArgumentException("Source and destination accounts must be different.");
         }
 
+        // Validar referencia única
         var referenceExists = await _transactionRepository.ExistsByReferenceAsync(request.Reference, cancellationToken);
 
         if (referenceExists)
@@ -139,6 +179,7 @@ public class TransactionService : ITransactionService
             throw new BusinessException("A transaction with the same reference already exists.");
         }
 
+        // Iniciar transacción de base de datos
         await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
         try
@@ -147,26 +188,24 @@ public class TransactionService : ITransactionService
             var destinationAccount = await _accountRepository.GetByIdAsync(request.DestinationAccountId, cancellationToken);
 
             if (sourceAccount is null)
-            {
                 throw new KeyNotFoundException("Source account was not found.");
-            }
 
             if (destinationAccount is null)
-            {
                 throw new KeyNotFoundException("Destination account was not found.");
-            }
 
+            // Validar cuentas activas
             EnsureAccountIsActive(sourceAccount);
             EnsureAccountIsActive(destinationAccount);
 
+            // Validar saldo
             if (sourceAccount.Balance < request.Amount)
-            {
                 throw new InsufficientFundsException();
-            }
 
+            // Aplicar movimientos
             sourceAccount.Balance -= request.Amount;
             destinationAccount.Balance += request.Amount;
 
+            // Registro de débito
             var debitTransaction = new Transaction
             {
                 Id = Guid.NewGuid(),
@@ -179,6 +218,7 @@ public class TransactionService : ITransactionService
                 CreatedAtUtc = DateTime.UtcNow
             };
 
+            // Registro de crédito
             var creditTransaction = new Transaction
             {
                 Id = Guid.NewGuid(),
@@ -197,17 +237,27 @@ public class TransactionService : ITransactionService
             await _transactionRepository.AddAsync(debitTransaction, cancellationToken);
             await _transactionRepository.AddAsync(creditTransaction, cancellationToken);
 
+            // Guardar y confirmar transacción
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             await _unitOfWork.CommitTransactionAsync(cancellationToken);
         }
         catch
         {
+            // Revertir en caso de error
             await _unitOfWork.RollbackTransactionAsync(cancellationToken);
             throw;
         }
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Obtiene una lista paginada de transacciones asociadas a una cuenta bancaria específica.
+    /// </summary>
+    /// <param name="accountId"></param>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="KeyNotFoundException"></exception>
     public async Task<(IReadOnlyList<TransactionResponseDto> Items, int TotalCount)> GetAccountTransactionsAsync(
         Guid accountId,
         int page,
@@ -238,6 +288,9 @@ public class TransactionService : ITransactionService
         return (items, result.TotalCount);
     }
 
+    /// <summary>
+    /// Valida que la cuenta esté en estado activo.
+    /// </summary>
     private static void EnsureAccountIsActive(Account account)
     {
         if (account.Status != AccountStatus.Active)
