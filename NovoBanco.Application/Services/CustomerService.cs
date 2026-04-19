@@ -42,13 +42,13 @@ public class CustomerService : ICustomerService
         // Validacion de nombre
         if (string.IsNullOrWhiteSpace(request.FullName))
         {
-            throw new ArgumentException("Full name is required.");
+            throw new ArgumentException(Resources.ValidationMessages.FullName_Required);
         }
 
         // Validacion de documento
         if (string.IsNullOrWhiteSpace(request.DocumentNumber))
         {
-            throw new ArgumentException("Document number is required.");
+            throw new ArgumentException(Resources.ValidationMessages.DocumentNumber_Required);
         }
 
         // Validar duplicado por documento
@@ -57,7 +57,7 @@ public class CustomerService : ICustomerService
 
         if (existingCustomer is not null)
         {
-            throw new BusinessException("A customer with the same document number already exists.");
+            throw new BusinessException(Resources.ValidationMessages.Existing_Customer);
         }
 
         // Crear entidad
@@ -96,7 +96,7 @@ public class CustomerService : ICustomerService
 
         if (customer is null)
         {
-            throw new KeyNotFoundException("Customer was not found.");
+            throw new KeyNotFoundException(Resources.ErrorMessages.Customer_NotFound);
         }
 
         return new CustomerResponseDto

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NovoBanco.Application.Dtos.Transactions;
 using NovoBanco.Application.Interfaces.Services;
+using NovoBanco.Application.Resources;
 
 namespace NovoBanco.Api.Controllers;
 
@@ -30,7 +31,7 @@ public class TransactionsController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _transactionService.DepositAsync(request, cancellationToken);
-        return Ok(new { message = "Deposit processed successfully." });
+        return Ok(new { message = SuccessMessages.Deposit_Processed });
     }
 
     /// <summary>
@@ -48,7 +49,7 @@ public class TransactionsController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _transactionService.WithdrawAsync(request, cancellationToken);
-        return Ok(new { message = "Withdrawal processed successfully." });
+        return Ok(new { message = SuccessMessages.Withdrawal_Processed });
     }
 
     /// <summary>
@@ -63,6 +64,6 @@ public class TransactionsController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _transactionService.TransferAsync(request, cancellationToken);
-        return Ok(new { message = "Transfer processed successfully." });
+        return Ok(new { message = SuccessMessages.Transfer_Processed });
     }
 }
